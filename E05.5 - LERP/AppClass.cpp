@@ -2,7 +2,7 @@
 void Application::InitVariables(void)
 {
 	//Change this to your name and email
-	m_sProgrammer = "Alberto Bobadilla - labigm@rit.edu";
+	m_sProgrammer = "Shubham Sachdeva - ss1594@g.rit.edu";
 
 	//Set the position and target of the camera
 	m_pCameraMngr->SetPositionTargetAndUpward(vector3(5.0f,3.0f,15.0f), ZERO_V3, AXIS_Y);
@@ -60,6 +60,29 @@ void Application::Display(void)
 
 	//your code goes here
 	v3CurrentPos = vector3(0.0f, 0.0f, 0.0f);
+
+	//initializing the location of the current stop
+	static uint currPos = 0;
+
+	//mapping the time value onto the percent value from 0 to 1
+	float fPercent = MapValue(fTimer, 0.0f, 1.0f, 0.0f, 1.0f);
+
+	//setting the start and end position
+	vector3 startPos = m_stopsList[currPos];
+	vector3 endPos = m_stopsList[(currPos + 1)% m_stopsList.size()];
+
+	//linear interpolation between start and end
+	v3CurrentPos = glm::lerp(startPos, endPos, fPercent);
+
+	//if percent is more than 1
+	if (fPercent >= 1.0f)
+	{
+		//go to the next position
+		currPos++;
+		currPos %= m_stopsList.size(); //prevent current position from going overboard
+		fTimer = m_pSystem->GetDeltaTime(uClock); //reset clock
+	}
+	
 	//-------------------
 	
 

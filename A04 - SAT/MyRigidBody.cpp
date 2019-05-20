@@ -251,7 +251,7 @@ bool MyRigidBody::IsColliding(MyRigidBody* const a_pOther)
 }
 void MyRigidBody::AddToRenderList(void)
 {
-	if (m_bVisibleBS)
+	if (!m_bVisibleBS)
 	{
 		if (m_CollidingRBSet.size() > 0)
 			m_pMeshMngr->AddWireSphereToRenderList(glm::translate(m_m4ToWorld, m_v3Center) * glm::scale(vector3(m_fRadius)), C_BLUE_CORNFLOWER);
@@ -276,17 +276,179 @@ void MyRigidBody::AddToRenderList(void)
 
 uint MyRigidBody::SAT(MyRigidBody* const a_pOther)
 {
-	/*
-	Your code goes here instead of this comment;
 
-	For this method, if there is an axis that separates the two objects
-	then the return will be different than 0; 1 for any separating axis
-	is ok if you are not going for the extra credit, if you could not
-	find a separating axis you need to return 0, there is an enum in
-	Simplex that might help you [eSATResults] feel free to use it.
-	(eSATResults::SAT_NONE has a value of 0)
-	*/
+	//distance between two points
+	float offset = glm::distance(this->GetCenterLocal(), a_pOther->GetCenterLocal());
+
+	//corners of the first rigid body
+	std::vector<vector3> OBBPoints;
+
+	//back bottom left
+	vector3 backBottomLeft1 = m_v3MinG;
+	OBBPoints.emplace_back(backBottomLeft1);
+	//front up right
+	vector3 frontUpRight1 = m_v3MaxG;
+	OBBPoints.emplace_back(frontUpRight1);
+	//back bottom right point
+	vector3 backBottomRight1 = vector3(m_v3MaxG.x, m_v3MinG.y, m_v3MinG.z);
+	OBBPoints.emplace_back(backBottomRight1);
+	//back up right point
+	vector3 backUpRight1 = vector3(m_v3MaxG.x, m_v3MaxG.y, m_v3MinG.z);
+	OBBPoints.emplace_back(backUpRight1);
+	//back up left point
+	vector3 backUpLeft1 = vector3(m_v3MinG.x, m_v3MaxG.y, m_v3MinG.z);
+	OBBPoints.emplace_back(backUpLeft1);
+	//front bottom left
+	vector3 frontBottomLeft1 = vector3(m_v3MinG.x, m_v3MinG.y, m_v3MaxG.z);
+	OBBPoints.emplace_back(frontBottomLeft1);
+	//front bottom right point
+	vector3 frontBottomRight1 = vector3(m_v3MaxG.x, m_v3MinG.y, m_v3MaxG.z);
+	OBBPoints.emplace_back(frontBottomRight1);
+	//front up left point
+	vector3 frontUpLeft1 = vector3(m_v3MinG.x, m_v3MaxG.y, m_v3MaxG.z);
+	OBBPoints.emplace_back(frontUpLeft1);
+
+	//corners of the second rigid body
+	vector3 v3MinLOther = a_pOther->GetMinGlobal();
+	vector3 v3MaxLOther = a_pOther->GetMaxGlobal();
+
+	//corners of the first rigid body
+	std::vector<vector3> OtherOBBPoints;
+
+	vector3 backBottomLeft2 = v3MinLOther;
+	OtherOBBPoints.emplace_back(backBottomLeft2);
+	//front up right
+	vector3 frontUpRight2 = v3MaxLOther;
+	OtherOBBPoints.emplace_back(frontUpRight2);
+	//back bottom right point
+	vector3 backBottomRight2 = vector3(v3MaxLOther.x, v3MinLOther.y, v3MinLOther.z);
+	OtherOBBPoints.emplace_back(backBottomRight2);
+	//back up right point
+	vector3 backUpRight2 = vector3(v3MaxLOther.x, v3MaxLOther.y, v3MinLOther.z);
+	OtherOBBPoints.emplace_back(backUpRight2);
+	//back up left point
+	vector3 backUpLeft2 = vector3(v3MinLOther.x, v3MaxLOther.y, v3MinLOther.z);
+	OtherOBBPoints.emplace_back(backUpLeft2);
+	//front bottom left
+	vector3 frontBottomLeft2 = vector3(v3MinLOther.x, v3MinLOther.y, v3MaxLOther.z);
+	OtherOBBPoints.emplace_back(frontBottomLeft2);
+	//front bottom right point
+	vector3 frontBottomRight2 = vector3(v3MaxLOther.x, v3MinLOther.y, v3MaxLOther.z);
+	OtherOBBPoints.emplace_back(frontBottomRight2);
+	//front up left point
+	vector3 frontUpLeft2 = vector3(v3MinLOther.x, v3MaxLOther.y, v3MaxLOther.z);
+	OtherOBBPoints.emplace_back(frontUpLeft2);
+
+	std::vector<vector3> normalList;
+
+	//normal of x axis of this body
+	vector3 A0 = vector3(GetModelMatrix()*vector4(AXIS_X,1.0f));
+	normalList.emplace_back(A0);
+	//normal of y axis of this body
+	vector3 A1 = vector3(GetModelMatrix()*vector4(AXIS_Y, 1.0f));
+	normalList.emplace_back(A1);
+	//normal of the z axis of this body
+	vector3 A2 = vector3(GetModelMatrix()*vector4(AXIS_Z, 1.0f));
+	normalList.emplace_back(A2);
+
+	//normal of x axis of other body
+	vector3 B0 = vector3(a_pOther->GetModelMatrix()*vector4(AXIS_X, 1.0f));
+	normalList.emplace_back(B0);
+	//normal of y axis of other body
+	vector3 B1 = vector3(a_pOther->GetModelMatrix()*vector4(AXIS_Y, 1.0f));
+	normalList.emplace_back(B1);
+	//normal of the z axis of other body
+	vector3 B2 = vector3(a_pOther->GetModelMatrix()*vector4(AXIS_Z, 1.0f));
+	normalList.emplace_back(B2);
+
+
+	//9 cross product axes
+	vector3 A0CrossB0 = glm::cross(A0, B0);
+	normalList.emplace_back(A0CrossB0);
+
+	vector3 A0CrossB1 = glm::cross(A0, B1);
+	normalList.emplace_back(A0CrossB1);
+
+	vector3 A0CrossB2 = glm::cross(A0, B2);
+	normalList.emplace_back(A0CrossB2);
+
+	vector3 A1CrossB0 = glm::cross(A1, B0);
+	normalList.emplace_back(A1CrossB0);
+
+	vector3 A1CrossB1 = glm::cross(A1, B1);
+	normalList.emplace_back(A1CrossB1);
+
+	vector3 A1CrossB2 = glm::cross(A1, B2);
+	normalList.emplace_back(A1CrossB2);
+
+	vector3 A2CrossB0 = glm::cross(A2, B0);
+	normalList.emplace_back(A2CrossB0);
+
+	vector3 A2CrossB1 = glm::cross(A2, B1);
+	normalList.emplace_back(A2CrossB1);
+
+	vector3 A2CrossB2 = glm::cross(A2, B2);
+	normalList.emplace_back(A2CrossB2);
+
+	int result = 0;
+
+	for (uint i = 1; i < normalList.size()+1; i++)
+	{
+		if (IsOverlapping(normalList[i-1], OBBPoints, OtherOBBPoints,offset)==false)
+		{
+			result = i;
+			break;
+		}
+	}
 
 	//there is no axis test that separates this two objects
-	return eSATResults::SAT_NONE;
+	return result;
+}
+
+bool MyRigidBody::IsOverlapping(vector3 axis, std::vector<vector3> thisPoints, std::vector<vector3> otherPoints,float offset)
+{
+
+	if (axis == ZERO_V3)
+	{
+		return true;
+	}
+
+	bool overlap = false;
+
+	//vector to hold the dot products of the this rigid body's points to the given axis
+	std::vector<float> dots1;
+
+	//adding the dot products to a vector
+	for (int i = 0; i < thisPoints.size(); i++)
+	{
+		dots1.emplace_back(glm::dot(axis, thisPoints[i])/glm::length(axis));
+	}
+
+	//vector to hold the dot products of the other rigid body's points to the given axis
+	std::vector<float> dots2;
+
+	//adding the dot products of to a vector
+	for (int i = 0; i < otherPoints.size(); i++)
+	{
+		dots2.emplace_back(glm::dot(axis, otherPoints[i])/glm::length(axis));
+	}
+
+	//holding the min and max from the first set of dot products
+	float min1 = *std::min_element(dots1.begin(), dots1.end());
+	float max1 = *std::max_element(dots1.begin(), dots1.end());
+
+	//holding the min and max from the first set of dot products
+	float min2 = *std::min_element(dots2.begin(), dots2.end());
+	float max2 = *std::max_element(dots2.begin(), dots2.end());
+
+	float longSpan = glm::max(max1, max2) - glm::min(min1, min2);
+	float sumSpan = (max1 - min1) + (max2 - min2);
+
+	if (min2<max1&&min1<max2)
+	{
+		overlap = true;
+	}
+
+	return longSpan <= sumSpan;
+	
 }

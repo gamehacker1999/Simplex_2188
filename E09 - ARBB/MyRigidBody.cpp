@@ -85,8 +85,52 @@ void MyRigidBody::SetModelMatrix(matrix4 a_m4ModelMatrix)
 	m_m4ToWorld = a_m4ModelMatrix;
 	
 	//your code goes here---------------------
-	m_v3MinG = m_v3MinL;
-	m_v3MaxG = m_v3MaxL;
+	
+	std::vector<vector3> arbbVertices;
+	//back bottom left
+	vector3 backBottomLeft = vector3(m_m4ToWorld*vector4(m_v3MinL,1.0f));
+	arbbVertices.emplace_back(backBottomLeft);
+	//front up right
+	vector3 frontUpRight = vector3(m_m4ToWorld*vector4(m_v3MaxL, 1.0f));
+	arbbVertices.emplace_back(frontUpRight);
+	//back bottom right point
+	vector3 backBottomRight = vector3(m_m4ToWorld*vector4(m_v3MaxL.x, m_v3MinL.y, m_v3MinL.z,1.0f));
+	arbbVertices.emplace_back(backBottomRight);
+	//back up right point
+	vector3 backUpRight = vector3(m_m4ToWorld*vector4(m_v3MaxL.x, m_v3MaxL.y, m_v3MinL.z,1.0f));
+	arbbVertices.emplace_back(backUpRight);
+	//back up left point
+	vector3 backUpLeft = vector3(m_m4ToWorld*vector4(m_v3MinL.x, m_v3MaxL.y, m_v3MinL.z,1.0f));
+	arbbVertices.emplace_back(backUpLeft);
+	//front bottom left
+	vector3 FrontBottomLeft = vector3(m_m4ToWorld*vector4(m_v3MinL.x, m_v3MinL.y, m_v3MaxL.z,1.0f));
+	arbbVertices.emplace_back(FrontBottomLeft);
+	//front bottom right point
+	vector3 FrontBottomRight = vector3(m_m4ToWorld*vector4(m_v3MaxL.x, m_v3MinL.y, m_v3MaxL.z,1.0f));
+	arbbVertices.emplace_back(FrontBottomRight);
+	//front up left point
+	vector3 FrontUpLeft = vector3(m_m4ToWorld*vector4(m_v3MinL.x, m_v3MaxL.y, m_v3MaxL.z,1.0));
+	arbbVertices.emplace_back(FrontUpLeft);
+
+	//setting the min and max vertex in global space
+	m_v3MaxG = m_v3MinG = arbbVertices[0];
+
+	//get the max and min out of the list
+	for (uint i = 0; i < 8; i++)
+	{
+		if (m_v3MaxG.x < arbbVertices[i].x) m_v3MaxG.x = arbbVertices[i].x;
+		else if (m_v3MinG.x > arbbVertices[i].x) m_v3MinG.x = arbbVertices[i].x;
+
+		if (m_v3MaxG.y < arbbVertices[i].y) m_v3MaxG.y = arbbVertices[i].y;
+		else if (m_v3MinG.y > arbbVertices[i].y) m_v3MinG.y = arbbVertices[i].y;
+
+		if (m_v3MaxG.z < arbbVertices[i].z) m_v3MaxG.z = arbbVertices[i].z;
+		else if (m_v3MinG.z > arbbVertices[i].z) m_v3MinG.z = arbbVertices[i].z;
+	}
+
+	//finding the center of the ARBB
+	m_v3CenterARBB = (m_v3MinG + m_v3MaxG) / 2.0f;
+
 	//----------------------------------------
 
 	//we calculate the distance between min and max vectors
@@ -254,7 +298,7 @@ void MyRigidBody::AddToRenderList(void)
 	if (m_bVisibleARBB)
 	{
 		if (m_CollidingRBSet.size() > 0)
-			m_pMeshMngr->AddWireCubeToRenderList(glm::translate(GetCenterGlobal()) * glm::scale(m_v3ARBBSize), C_YELLOW);
+			m_pMeshMngr->AddWireCubeToRenderList(glm::translate(m_v3CenterARBB) * glm::scale(m_v3ARBBSize), C_YELLOW);
 		else
 			m_pMeshMngr->AddWireCubeToRenderList(glm::translate(GetCenterGlobal()) * glm::scale(m_v3ARBBSize), C_YELLOW);
 	}

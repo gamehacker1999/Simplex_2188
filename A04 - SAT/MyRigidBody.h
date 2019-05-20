@@ -247,6 +247,15 @@ private:
 	OUTPUT: 0 for colliding, other = first axis that succeeds test
 	*/
 	uint SAT(MyRigidBody* const a_pOther);
+
+	//Function that will find the vertex normals of all the axis
+	vector3 GetNormal(vector3 startPos, vector3 endPos,bool yAxis);
+
+	//function to check if axis is overlapping
+	//arguments - the axis of collision, the 8 points on this rigid body, 
+	//the 8 points on other rigid body, offset is the distance between two bodies
+	bool IsOverlapping(vector3 axis, std::vector<vector3> thisPoints, std::vector<vector3> otherPoints,float offset);
+	
 };//class
 
 } //namespace Simplex
