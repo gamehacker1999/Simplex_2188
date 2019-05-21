@@ -17,6 +17,38 @@ void MyMesh::GenerateCircle(float a_fRadius, int a_nSubdivisions, vector3 a_v3Co
 		then call the AddTri function to generate a_nSubdivision number of faces
 	*/
 
+	//calculating the angle at which the vertices would be put
+	float pos = 0;
+	float angle = 360 / a_nSubdivisions;
+
+	//creating a vector of points
+	std::vector<vector3> points;
+
+	//calculating the radial points around the circle on which the vertices would be added
+	// the x coordinate is the cosine and the y coordinate is the sin of the angle
+	//the position of the vertex is calculated using a positive multiple of the angle
+	for (int i = 0; i < a_nSubdivisions; i++)
+	{
+		vector3 point = vector3(cos(i * angle*PI / 180)*a_fRadius, sin(i * angle*PI / 180)*a_fRadius, a_fRadius);
+		points.emplace_back(point);
+	}
+
+	//adding triangles to make the circle
+	for (int i = 0; i < a_nSubdivisions; i++)
+	{
+		//if you are not at the last vertex
+		if (i < a_nSubdivisions - 1)
+		{
+			AddTri(points[i], points[i + 1], vector3(0, 0, a_fRadius));
+		}
+
+		//if you are at the last vertex then loop around to the first one
+		else
+		{
+			AddTri(points[i], points[0], vector3(0, 0, a_fRadius));
+		}
+	}
+
 	// Adding information about color
 	CompleteMesh(a_v3Color);
 	CompileOpenGL3X();

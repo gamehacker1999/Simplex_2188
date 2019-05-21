@@ -417,6 +417,7 @@ void Application::ProcessKeyboard(void)
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::X))
 	{
 
+		//the value variable stores how much it is rotated by
 		float value = 0.0f;
 
 		if (fMultiplier)
@@ -430,6 +431,8 @@ void Application::ProcessKeyboard(void)
 			value = 1.0f;
 		}
 
+		//calculating the orientation of the object based on the keypress
+		//the orientation is in the form of a quaternion
 		quaternion q1 = glm::angleAxis(glm::radians(value), vector3(1.0f, 0.0f, 0.0f));
 		m_qOrientation *= q1;
 	}
@@ -448,6 +451,8 @@ void Application::ProcessKeyboard(void)
 			value = 1.0f;
 		}
 
+		//calculating the orientation of the object based on the keypress
+	   //the orientation is in the form of a quaternions
 		quaternion q1 = glm::angleAxis(glm::radians(value), vector3(0.0f, 1.0f, 0.0f));
 		m_qOrientation *= q1;
 	}
@@ -466,6 +471,8 @@ void Application::ProcessKeyboard(void)
 			value = 1.0f;
 		}
 
+		//calculating the orientation of the object based on the keypress
+		//the orientation is in the form of a quaternion
 		quaternion q1 = glm::angleAxis(glm::radians(value), vector3(0.0f, 0.0f, 1.0f));
 		m_qOrientation *= q1;
 	}

@@ -10,6 +10,7 @@ void Application::InitVariables(void)
 	m_pModel = new Simplex::Model();
 	m_pModel->Load("Sorted\\WallEye.bto");
 	
+	//setting up the stops list
 	m_stopsList.push_back(vector3(-4.0f, -2.0f, 5.0f));
 	m_stopsList.push_back(vector3(1.0f, -2.0f, 5.0f));
 

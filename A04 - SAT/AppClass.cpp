@@ -1,9 +1,9 @@
-#include "AppClass.h"
+#include "AppClass.h"--------------------------------------------------
 using namespace Simplex;
 void Application::InitVariables(void)
 {
 	//Change this to your name and email
-	m_sProgrammer = "Alberto Bobadilla - labigm@rit.edu";
+	m_sProgrammer = "Shubham Sachdeva - ss1594@g.rit.edu";
 
 	//Set the position and target of the camera
 	m_pCameraMngr->SetPositionTargetAndUpward(
