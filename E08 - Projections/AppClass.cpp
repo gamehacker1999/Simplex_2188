@@ -46,6 +46,8 @@ void Application::Display(void)
 	m_pMeshMngr->AddSkyboxToRenderList();
 
 	//calculate view and projection
+
+	//adding the 7 scenes to the camera
 	switch (m_uProjection)
 	{
 	default:
@@ -53,32 +55,38 @@ void Application::Display(void)
 		m_pCamera->ResetCamera();
 		break;
 	case 2:
+		//using orthograohic view
 		m_pCamera->ResetCamera();
 		m_pCamera->SetPerspective(false);
 
 		break;
 	case 3:
 		m_pCamera->ResetCamera();
+		//placing the camera to the right, changing the way up points, and setting the horizontal and vertical planes
 		m_pCamera->SetPositionTargetAndUpward(vector3(30.0f, .0f, 0.0f), vector3(0.0f, 0.0f, 0.0f), vector3(0.0f, 0.0f, -100.0f));
 		m_pCamera->SetHorizontalPlanes(vector2(-17.0f, 17.0f));
 		m_pCamera->SetVerticalPlanes(vector2(-17.0f, 17.0f));
 		break;
 	case 4:
 		m_pCamera->ResetCamera();
+		//placing the camera behind the original position
 		m_pCamera->SetPositionTargetAndUpward(vector3(0.0f, .0f, -15.0f), vector3(0, 0, 0), vector3(0.0, 1.0, 0.0));
 		break;
 	case 5:
 		m_pCamera->ResetCamera();
+		//setting the near plane close enough to disappear the cone
 		m_pCamera->SetPositionTargetAndUpward(vector3(0.0f, .0f, -15.0f), vector3(0, 0, 0), vector3(0.0, 1.0, 0.0));
 		m_pCamera->SetNearFar(vector2(5.0f, 1000.0f));
 		break;
 	case 6:
 		m_pCamera->ResetCamera();
+		//setting the far plane close enough to disappear the furthest torus
 		m_pCamera->SetPositionTargetAndUpward(vector3(0.0f, .0f, -15.0f), vector3(0, 0, 0), vector3(0.0, 1.0, 0.0));
 		m_pCamera->SetNearFar(vector2(0.001f, 10.0f));
 		break;
 	case 7:
 		m_pCamera->ResetCamera();
+		//flipping the camera by flipping the up
 		m_pCamera->SetPositionTargetAndUpward(vector3(0.0f, .0f, 10.0f), vector3(0, 0, 0), vector3(0.0, -1.0, 0.0));
 		break;
 	}
