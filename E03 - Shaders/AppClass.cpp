@@ -67,6 +67,7 @@ void AppClass::InitOpenGL(void)
 }
 void AppClass::InitShaders(void)
 {
+	//I created a shader called basic color complimentary
 	m_uShaderProgramID = LoadShaders("Shaders//BasicColor.vs", "Shaders//BasicColorComplementary.fs");
 	glUseProgram(m_uShaderProgramID);
 }
@@ -118,7 +119,7 @@ void AppClass::ProcessKeyboard(sf::Event a_event)
 		m_v3Color = glm::vec3(0.0f, 0.0f, 1.0f);
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num0))
 		m_v3Color = glm::vec3(-1.0f, -1.0f, -1.0f);
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::C))
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::C)) //switch to complementary color if the key is pressed
 		complementary = !complementary;
 
 }
@@ -131,6 +132,7 @@ void AppClass::Display(void)
 	GLuint SolidColor = glGetUniformLocation(m_uShaderProgramID, "SolidColor");
 	glUniform3f(SolidColor, m_v3Color.r, m_v3Color.g, m_v3Color.b);
 
+	//changing the value of the complimentary uniform value
 	GLboolean compFlag = glGetUniformLocation(m_uShaderProgramID, "complementary");
 	glUniform1i(compFlag, complementary);
 

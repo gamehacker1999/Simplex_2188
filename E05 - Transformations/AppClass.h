@@ -44,7 +44,7 @@ private:
 	std::vector<MyMesh*> m_pMeshes; //vector to hold all meshes
 	std::vector<matrix4> m_pModelMatrices;
 
-	//initializing locations of all the meshes
+	//initializing locations of all the meshes to create the invader
 	int m_pMeshLocation[8][11] = {
 	{0,0,0,1,1,0,1,1,0,0,0},
 	{1,0,1,0,0,0,0,0,1,0,1},
