@@ -55,10 +55,6 @@ void Application::Display(void)
 	//calculate the current position
 	vector3 v3CurrentPos;
 	
-
-
-
-
 	//your code goes here
 	v3CurrentPos = vector3(0.0f, 0.0f, 0.0f);
 
