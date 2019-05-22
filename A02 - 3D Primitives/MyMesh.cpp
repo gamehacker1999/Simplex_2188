@@ -278,17 +278,22 @@ void MyMesh::GenerateCone(float a_fRadius, float a_fHeight, int a_nSubdivisions,
 
 	// Replace this with your code
 	//GenerateCube(a_fRadius * 2.0f, a_v3Color);
+
+	//calculate all the angle values and the angle location of each vertex of the base
 	float pos = 0;
 	float angle = 360 / a_nSubdivisions;
 
+	//vector to hold the points
 	std::vector<vector3> points;
 
+	//creating the base using sin and cosine of the angle times a positive integer value
 	for (int i = 0; i < a_nSubdivisions; i++)
 	{
 		vector3 point = vector3(cos(i * angle*PI / 180)*a_fRadius, -a_fHeight / 2, sin(i * angle*PI / 180)*a_fRadius);
 		points.emplace_back(point);
 	}
 
+	//for all subdivision locations, add a try between two adjacent vertices of the base and the centers
 	for (int i = 0; i < a_nSubdivisions; i++)
 	{
 		if (i < a_nSubdivisions - 1)
@@ -296,12 +301,14 @@ void MyMesh::GenerateCone(float a_fRadius, float a_fHeight, int a_nSubdivisions,
 			AddTri(points[i], points[i + 1], vector3(0, -a_fHeight / 2, 0));
 		}
 
+		//if the loop is at the last position, then loop back to the first vertex
 		else
 		{
 			AddTri(points[i], points[0], vector3(0, -a_fHeight / 2, 0));
 		}
 	}
 
+	//for all subdivision locations, add a try between two adjacent vertices of the base and the tip of the cone
 	for (int i = 0; i < a_nSubdivisions; i++)
 	{
 		if (i < a_nSubdivisions - 1)
@@ -338,17 +345,23 @@ void MyMesh::GenerateCylinder(float a_fRadius, float a_fHeight, int a_nSubdivisi
 
 	// Replace this with your code
 	//GenerateCube(a_fRadius * 2.0f, a_v3Color);
+
+	//calculate the angle of the subdivision location
 	float pos = 0;
 	float angle = 360 / a_nSubdivisions;
 
+	//points of the pottom base
 	std::vector<vector3> points;
 
+	//creating a base by calculating the vertex of the circumfrence of the circle using sin and cosine
 	for (int i = 0; i < a_nSubdivisions; i++)
 	{
 		vector3 point = vector3(cos(i * angle*PI / 180)*a_fRadius, -a_fHeight / 2, sin(i * angle*PI / 180)*a_fRadius);
 		points.emplace_back(point);
 	}
 
+
+	//creating the base by adding the tri from two adjacent vertices and the center location of base
 	for (int i = 0; i < a_nSubdivisions; i++)
 	{
 		if (i < a_nSubdivisions - 1)
@@ -362,14 +375,18 @@ void MyMesh::GenerateCylinder(float a_fRadius, float a_fHeight, int a_nSubdivisi
 		}
 	}
 
+	//the entire aforementioned procedure is repeated for the top base
+	//the only difference is the height
 	std::vector<vector3> pointsUp;
 
+	//calculating vertices of base
 	for (int i = 0; i < a_nSubdivisions; i++)
 	{
 		vector3 point = vector3(cos(i * angle*PI / 180)*a_fRadius, a_fHeight / 2, sin(i * angle*PI / 180)*a_fRadius);
 		pointsUp.emplace_back(point);
 	}
 
+	//creating top base
 	for (int i = 0; i < a_nSubdivisions; i++)
 	{
 		if (i < a_nSubdivisions - 1)
@@ -383,6 +400,9 @@ void MyMesh::GenerateCylinder(float a_fRadius, float a_fHeight, int a_nSubdivisi
 		}
 	}
 
+	//looping through all the vertices by the number of subdivisions
+	//adding a quad using two adjacent vertices from the same base,
+	//and two parallel vertices from the other base
 	for (int i = 0; i < a_nSubdivisions; i++)
 	{
 		if (i < a_nSubdivisions - 1)
@@ -424,8 +444,13 @@ void MyMesh::GenerateTube(float a_fOuterRadius, float a_fInnerRadius, float a_fH
 	Init();
 
 	// Replace this with your code
+
+	//calculating the radial position of each vertex in each subdivision
 	float pos = 0;
 	float angle = 360 / a_nSubdivisions;
+
+	//the following code creates 4 bases as done with othe shapes
+	//outer lower, inner lower, outer upper, and inner upper
 
 	//lower outer points
 	std::vector<vector3> points;
@@ -464,6 +489,7 @@ void MyMesh::GenerateTube(float a_fOuterRadius, float a_fInnerRadius, float a_fH
 	}
 
 	//outer face of the tube
+	//creating the quads for the outer surface of the tube
 	for (int i = 0; i < a_nSubdivisions; i++)
 	{
 		if (i < a_nSubdivisions - 1)
@@ -478,6 +504,7 @@ void MyMesh::GenerateTube(float a_fOuterRadius, float a_fInnerRadius, float a_fH
 	}
 
 	//inner face of the tube
+	//creating the quad for the inner surface of tube
 	for (int i = 0; i < a_nSubdivisions; i++)
 	{
 		if (i < a_nSubdivisions - 1)
@@ -492,6 +519,8 @@ void MyMesh::GenerateTube(float a_fOuterRadius, float a_fInnerRadius, float a_fH
 	}
 
 	//bottom surface of tube
+	//creating the quad for the bottom of the cube by using vertices from the inner bottom
+	//and their parallel vertices from outer bottom
 	for (int i = 0; i < a_nSubdivisions; i++)
 	{
 		if (i < a_nSubdivisions - 1)
@@ -506,6 +535,8 @@ void MyMesh::GenerateTube(float a_fOuterRadius, float a_fInnerRadius, float a_fH
 	}
 
 	//top surface of tube
+	//creating the quad for the bottom of the cube by using vertices from the inner top
+	//and their parallel vertices from outer top
 	for (int i = 0; i < a_nSubdivisions; i++)
 	{
 		if (i < a_nSubdivisions - 1)
@@ -552,22 +583,33 @@ void MyMesh::GenerateTorus(float a_fOuterRadius, float a_fInnerRadius, int a_nSu
 	// Replace this with your code
 	//subdivision a is the subdivisions on the tube circle
 	//subdivision b is the subdivisions on the whole torus
+
+	//minor radius is the radius of the tube of the torus
+	//major radius is the distance between the center of the torus and the center of the tube
 	float minorRadius = (a_fOuterRadius - a_fInnerRadius) / 2;
 	float majorRadius = minorRadius + a_fInnerRadius;
 
+	//calculating the angle in the tube and torus by using their respective number of subdivisions
 	float angleInTube = 2 * PI / a_nSubdivisionsA;
 	float angleInTorus = 2 * PI / a_nSubdivisionsB;
 
+	//vertices to store the 4 vertices of torus that will make a quad
 	vector3 v1;
 	vector3 v2;
 	vector3 v3;
 	vector3 v4;
 
+	//looping garound the torus
 	for (float i = angleInTorus; i <= 2 * PI + angleInTorus; i += angleInTorus)
 	{
 		for (float j = 0; j <= 2 * PI; j += angleInTube)
 		{
+			//calculating the vertex of the torus using toroidal coordinates
+			//the formula is x = major+(minor*cosine of the angle in torus)*cosine of angle in tube
+			//y = minor*sin of angle in torus
+			//z = major+(minor*cosine of the angle in torus)*sin of angle in tube
 
+			//calcuating 4 adjacent vertices to make a quad using this formula
 			v1.x = (majorRadius + (minorRadius * cos(i)))*cos(j);
 			v1.y = minorRadius * sin(i);
 			v1.z = (majorRadius + minorRadius * cos(i))*sin(j);
@@ -584,6 +626,7 @@ void MyMesh::GenerateTorus(float a_fOuterRadius, float a_fInnerRadius, int a_nSu
 			v4.y = minorRadius * sin(i - angleInTorus);
 			v4.z = (majorRadius + minorRadius * cos(i - angleInTorus))*sin(j);
 
+			//adding quads around the torus using these coordinated to make the torus
 			AddQuad(v3, v4, v2, v1);
 
 		}
@@ -613,26 +656,35 @@ void MyMesh::GenerateSphere(float a_fRadius, int a_nSubdivisions, vector3 a_v3Co
 	Init();
 
 	// Replace this with your code
+
+	//latitude and longitude is the number of subdivision accross and verically on the circle
 	float latitude = a_nSubdivisions;
 	float longitude = a_nSubdivisions;
 
-	vector3 spherePoints[6][6];
-
+	//looping through latitude and longitide to calculate the vertex
+	//spherical coordinates formula, x = sin theta* cosine phi
+	//y = cosine theta
+	//z = sin theta* sin phi
+	//where theta = PI*(current subdivision/number of latitudes)
+	//phi = 2*PI*(current subdivision/number of longitude)
 	for (int i = 0; i < latitude; i++)
 	{
+		//calculating adjacent theta values
 		float theta1 = (PI*((float)i / (float)latitude));
 		float theta2 = (PI*((float)(i + 1) / (float)latitude));
 		for (int j = 0; j < longitude; j++)
 		{
+			//calculating adjacent phi values
 			float phi1 = 2 * PI*((float)j / (float)longitude);
 			float phi2 = 2 * PI*((float)(j + 1) / (float)longitude);
 
-			//spherical coordinates of 4 adjacent points on the circle
+			//spherical coordinates of 4 adjacent points on the sphere
 			vector3 v1 = vector3(sin(theta1)*cos(phi1), cos(theta1), sin(theta1)*sin(phi1))*a_fRadius;
 			vector3 v2 = vector3(sin(theta1)*cos(phi2), cos(theta1), sin(theta1)*sin(phi2))*a_fRadius;
 			vector3 v3 = vector3(sin(theta2)*cos(phi2), cos(theta2), sin(theta2)*sin(phi2))*a_fRadius;
 			vector3 v4 = vector3(sin(theta2)*cos(phi1), cos(theta2), sin(theta2)*sin(phi1))*a_fRadius;
 
+			//using the 4 points to create two tris around the sphere
 			AddTri(v3, v4, v2);
 			AddTri(v2, v4, v1);
 
