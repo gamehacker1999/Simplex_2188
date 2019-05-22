@@ -30,6 +30,8 @@ void Application::Display(void)
 	m_m4Model = glm::rotate(m_m4Model, glm::radians(m_v3Rotation.z), vector3(0.0f, 0.0f, 1.0f));*/
 	//m_pMesh->Render(m4Projection, m4View, ToMatrix4(m_m4Model));
 
+	//removing gimbal lock
+
 	//converting the orientation of the model from quaternion to matrix 4
 	m_m4Model = glm::toMat4(m_qOrientation);
 
