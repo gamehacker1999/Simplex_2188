@@ -308,6 +308,7 @@ uint MyRigidBody::SAT(MyRigidBody* const a_pOther)
 	vector3 frontUpLeft1 = vector3(m_v3MinL.x, m_v3MaxL.y, m_v3MaxL.z);
 	OBBPoints.emplace_back(frontUpLeft1);
 
+	//calculating the global position of every single corner point
 	for (uint i = 0; i < OBBPoints.size(); i++)
 	{
 		OBBPoints[i] = vector3(GetModelMatrix()*vector4(OBBPoints[i],1.0f));
@@ -344,11 +345,13 @@ uint MyRigidBody::SAT(MyRigidBody* const a_pOther)
 	vector3 frontUpLeft2 = vector3(v3MinGOther.x, v3MaxGOther.y, v3MaxGOther.z);
 	OtherOBBPoints.emplace_back(frontUpLeft2);
 
+	//calculating the global space of every single corner point
 	for (uint i = 0; i < OtherOBBPoints.size(); i++)
 	{
 		OtherOBBPoints[i] = vector3(a_pOther->GetModelMatrix()*vector4(OtherOBBPoints[i], 1.0f));
 	}
 
+	//list to hold the axis of seperation
 	std::vector<vector3> normalList;
 
 	//normal of x axis of this body
@@ -402,10 +405,13 @@ uint MyRigidBody::SAT(MyRigidBody* const a_pOther)
 
 	int result = 0;
 
+	//looping through the normals and checking if there is overlap on any of the normal
 	for (uint i = 1; i < normalList.size()+1; i++)
 	{
+		//if there is no overlap on even one axis, it means that there is no collision
 		if (IsOverlapping(normalList[i-1], OBBPoints, OtherOBBPoints,offset)==false)
 		{
+			//result is set to a value not equal to 0;
 			result = i;
 			break;
 		}
@@ -417,7 +423,7 @@ uint MyRigidBody::SAT(MyRigidBody* const a_pOther)
 
 bool MyRigidBody::IsOverlapping(vector3 axis, std::vector<vector3> thisPoints, std::vector<vector3> otherPoints,float offset)
 {
-
+	//if the cross product is a zero vector then assume there is an overlap
 	if (axis == ZERO_V3)
 	{
 		return true;
@@ -451,11 +457,13 @@ bool MyRigidBody::IsOverlapping(vector3 axis, std::vector<vector3> thisPoints, s
 	float min2 = *std::min_element(dots2.begin(), dots2.end());
 	float max2 = *std::max_element(dots2.begin(), dots2.end());
 
+	//checking if there is an overlap between the dot products of both objects
 	if (min2<max1&&min1<max2)
 	{
 		overlap = true;
 	}
 
+	//returning whether objects are overlapping or not
 	return overlap;
 	
 }

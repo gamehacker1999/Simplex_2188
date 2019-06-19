@@ -238,19 +238,10 @@ public:
 	void MoveSideways(float a_fDistance = 0.1f);
 
 	/*
-	USAGE: Rotates the camera left or right
-	ARGUMENTS: float angle = 0 -> amount of movement
+	USAGE: Rotates the camera vertically or horizontally
+	ARGUMENTS: yaw -> rotation about up axis, pitch -> rotation about right axis
 	OUTPUT: ---
 	*/
-	void CalculateXRotation(float angle = 0.0f);
-
-	/*
-	USAGE: Rotates the camera up or down
-	ARGUMENTS: float angle = 0 -> amount of movement
-	OUTPUT: ---
-	*/
-	void CalculateYRotation(float angle = 0);
-
 	void CalculateRotation(float pitch, float yaw);
 };
 

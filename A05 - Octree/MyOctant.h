@@ -20,7 +20,7 @@ namespace Simplex
 		float m_fSize = 0.0f; //Size of the octant
 
 		MeshManager* m_pMeshMngr = nullptr;//Mesh Manager singleton
-		EntityManager* m_pEntityMngr = nullptr; //Entity Manager Singleton
+		MyEntityManager* m_pEntityMngr = nullptr; //Entity Manager Singleton
 
 		vector3 m_v3Center = vector3(0.0f); //Will store the center point of the octant
 		vector3 m_v3Min = vector3(0.0f); //Will store the minimum vector of the octant
@@ -49,7 +49,7 @@ namespace Simplex
 		MyOctant& operator = (const MyOctant& other);
 
 		//swaps data between this and the next octant
-		void Swap(const MyOctant& other);
+		void Swap(MyOctant& other);
 
 		//accessor - gets the size of the octant
 		float GetSize();
@@ -72,20 +72,11 @@ namespace Simplex
 		//function to display octant specified by the color
 		void Display(vector3 a_v3Color = C_YELLOW);
 
-		//display the non empty leaves in the oct tree
-		void DisplayLeaves(vector3 a_v3Color = C_YELLOW);
-
-		//clears the entity list
-		void ClearEntityList();
-
 		//allocates 8 smaller octants in the child pointers
-		void Subdivide();
+		void Subdivide(uint a_nMaxLevel = 3);
 
 		//gets the child specified by the index from 0 - 7
-		Octant* GetChild(uint a_nChild);
-		
-		//returns the parent of the object
-		Octant* GetParent();
+		MyOctant* GetChild(uint a_nChild);
 		
 		//function to check if the octant contains any children
 		bool IsLeaf();
@@ -96,14 +87,11 @@ namespace Simplex
 		//deletes all the children and subchildren of this node
 		void KillBranches();
 
-		//Creates a tree using subdivisions, the max number of objects and levels
-		void ConstructTree(uint a_nMaxLevel = 3);
-
 		// Traverse the tree up to the leafs and sets the objects in them to the index
 		void AssignIDtoEntity();
 
 		//gets the total number of octants in the world
-		uint GetOctantCount(void);
+		uint GetOctantCount();
 
 		//destructor
 		~MyOctant();

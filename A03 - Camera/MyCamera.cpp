@@ -156,16 +156,21 @@ void Simplex::MyCamera::CalculateProjectionMatrix(void)
 
 void MyCamera::MoveForward(float a_fDistance)
 {
-	//The following is just an example and does not take in account the forward vector (AKA view vector)
+
+	//if you are in perspective mode
 
 	if (m_bPerspective)
 	{
+		//move the position, target, and above forward by the amount of the forward vector times distance
 		m_v3Position += m_v3Forward * (a_fDistance);
 		m_v3Target += m_v3Forward * (a_fDistance);
 		m_v3Above += m_v3Forward * (a_fDistance);
 
+		//calculate new forward vector
 		m_v3Forward = glm::normalize(m_v3Target - m_v3Position);
+		//calculate new up vector
 		m_v3Up = glm::normalize(m_v3Above - m_v3Position);
+		//right vector is a cross of forward and up
 		m_v3Right = glm::normalize(glm::cross(m_v3Forward, m_v3Up));
 	}
 }
@@ -174,95 +179,61 @@ void MyCamera::MoveVertical(float a_fDistance)
 {
 	if (m_bPerspective)
 	{
-		m_v3Position += m_v3Up * (a_fDistance);
-		m_v3Target += m_v3Up * (a_fDistance);
-		m_v3Above += m_v3Up * (a_fDistance);
+		//move the position, target, and above forward by the amount of the Up vector times distance
+		m_v3Position += AXIS_Y * (a_fDistance);
+		m_v3Target += AXIS_Y* (a_fDistance);
+		m_v3Above += AXIS_Y * (a_fDistance);
 
+		//calculate new forward vector
 		m_v3Forward = glm::normalize(m_v3Target - m_v3Position);
+		//calculate new up vector
 		m_v3Up = glm::normalize(m_v3Above - m_v3Position);
+		//right vector is a cross product of forward and up
 		m_v3Right = glm::normalize(glm::cross(m_v3Forward, m_v3Up));
 	}
 }
 
 void MyCamera::MoveSideways(float a_fDistance)
 {
+	//move the position, target, and above forward by the amount of the right vector times distance
 	m_v3Position += m_v3Right * (a_fDistance);
 	m_v3Target += m_v3Right * (a_fDistance);
 	m_v3Above += m_v3Right * (a_fDistance);
 
+
+	//calculate new forward vector
 	m_v3Forward = glm::normalize(m_v3Target - m_v3Position);
+	//calculate new up vector
 	m_v3Up = glm::normalize(m_v3Above - m_v3Position);
+	//right vector is a cross product of forward and up
 	m_v3Right = glm::normalize(glm::cross(m_v3Forward, m_v3Up));
-}
-
-void Simplex::MyCamera::CalculateXRotation(float angle)
-{
-	/*m_v3Target = glm::rotate(m_v3Target,glm::radians(angle), m_v3Up);
-	m_v3Above = glm::rotate(m_v3Above, glm::radians(angle), m_v3Up);
-
-	m_v3Forward = glm::normalize(m_v3Target - m_v3Position);
-	m_v3Up = glm::normalize(m_v3Above - m_v3Position);
-	m_v3Right = glm::normalize(glm::cross(m_v3Forward, m_v3Up));*/
-
-	quaternion q1 = glm::angleAxis(angle, vector3(0.0f,1.0f,0.0f));
-
-	m_qOrientation *= q1;
-
-	/*//m_v3Position = glm::rotate(m_qOrientation, m_v3Target);
-	m_v3Target = glm::rotate(m_v3Target, angle, m_v3Up);
-	m_v3Above = glm::rotate(m_v3Above, angle, m_v3Up);
-
-	m_v3Forward = glm::normalize(m_v3Target - m_v3Position);
-	m_v3Up = glm::normalize(m_v3Above - m_v3Position);
-	m_v3Right = glm::normalize(glm::cross(m_v3Forward, m_v3Up));*/
-	m_v3Forward = glm::rotate(m_v3Forward, angle, AXIS_Y);
-	//m_v3Right = glm::normalize(glm::cross(m_v3Forward, m_v3Up));
-
-	m_v3Above = glm::normalize(m_v3Position+m_v3Up);
-
-	//m_v3Target = m_v3Position + m_v3Forward;
-}
-
-void Simplex::MyCamera::CalculateYRotation(float angle)
-{
-	quaternion q1 = glm::angleAxis(angle, m_v3Right);
-
-	m_qOrientation *= q1;
-
-	/*//m_v3Position = glm::rotate(m_qOrientation, m_v3Target);
-	m_v3Target = glm::rotate(m_v3Target, angle, m_v3Right);
-	m_v3Above = glm::rotate(m_v3Above, angle, m_v3Right);
-
-	m_v3Forward = glm::normalize(m_v3Target - m_v3Position);
-	m_v3Up = glm::normalize(m_v3Above - m_v3Position);*/
-
-	std::cout << m_v3Forward.y << std::endl;
-
-	m_v3Forward = glm::rotate(m_v3Forward, -angle/4, m_v3Right);
-	m_v3Up = glm::rotate(m_v3Up, -angle/4, m_v3Right);
-	//m_v3Right = glm::normalize(glm::cross(m_v3Forward, m_v3Up));
-
-	m_v3Above = glm::normalize(m_v3Position + m_v3Up);
-	m_v3Target = glm::normalize(m_v3Position + m_v3Forward);
-
 }
 
 void Simplex::MyCamera::CalculateRotation(float pitch, float yaw)
 {
-
+	//if you are in perspective mode
 	if (m_bPerspective)
 	{
-		vector3 direction;
+		//initializing drection vector
+		vector3 direction = ZERO_V3;
 
+		//calculating the x,y, and z of direction vector based on the yaw and pitch
+		//x = cos of pitch*cos of yaw
+		//y = sin of pitch
+		//z = cos of pitch*sin of yaw
 		direction.x = cos(glm::radians(pitch))*cos(glm::radians(yaw));
 		direction.y = sin(glm::radians(pitch));
 		direction.z = cos(glm::radians(pitch))*sin(glm::radians(yaw));
 
+		//forward vector is normalize of direction
 		m_v3Forward = glm::normalize(direction);
+		//right vector is cross product of forward vector and y axis
 		m_v3Right = glm::normalize(glm::cross(m_v3Forward, AXIS_Y));
+		//up vector is cross product of right vector and forard vector
 		m_v3Up = glm::normalize(glm::cross(m_v3Right, m_v3Forward));
 
-		m_v3Target = m_v3Position + m_v3Forward;
+		//calculating the new target and position
+		m_v3Target = (m_v3Position + m_v3Forward);
 		m_v3Above = m_v3Position + m_v3Up;
 	}
 

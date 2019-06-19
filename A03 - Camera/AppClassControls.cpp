@@ -344,51 +344,58 @@ void Application::CameraRotation(float a_fSpeed)
 	MouseY = pt.y;
 
 	//Calculate the difference in view with the angle
-	float fAngleX = 0.0f;
-	float fAngleY = 0.0f;
+	static float fAngleX = 0.0f;
+
+	//setting an initial yaw angle
+	static float fAngleY = 90.0f;
 	float fDeltaMouse = 0.0f;
+
+	//increasing the mouse sensitivity
+	a_fSpeed *= 2;
+
+	//if mouse is moved left then calculate yaw
 	if (MouseX < CenterX)
 	{
 		fDeltaMouse = static_cast<float>(CenterX - MouseX);
 		fAngleY += fDeltaMouse * a_fSpeed;
 	}
+
+	//if mouse is moved right calculate yaw
 	else if (MouseX > CenterX)
 	{
 		fDeltaMouse = static_cast<float>(MouseX - CenterX);
 		fAngleY -= fDeltaMouse * a_fSpeed;
 	}
 
+	//if mouse is moved down then calculate pitch
 	if (MouseY < CenterY)
 	{
 		fDeltaMouse = static_cast<float>(CenterY - MouseY);
 		fAngleX -= fDeltaMouse * a_fSpeed;
 	}
+
+	//if mouse is moved up then calculate pitch
 	else if (MouseY > CenterY)
 	{
 		fDeltaMouse = static_cast<float>(MouseY - CenterY);
 		fAngleX += fDeltaMouse * a_fSpeed;
 	}
 
-	static float pitch = 0;
-	static float yaw = 0;
-
-	pitch += fAngleX;
-	yaw += fAngleY;
-
-	if (pitch > 89.0f)
+	//if you are looking straight down then dont go furter
+	if (fAngleX > 85.0f)
 	{
-		pitch = 89.0;
+		fAngleX = 85.0f;
 	}
 
-	if (pitch < -89.0f)
+	//if you are looking straight up then dont go further
+	if (fAngleX < -85.0f)
 	{
-		pitch = -89.0f;
+		fAngleX = -85.0f;
 	}
 
 	//Change the Yaw and the Pitch of the camera
-
 	if(fAngleX!=0||fAngleY!=0)
-		m_pCamera->CalculateRotation(-pitch, -yaw);
+		m_pCamera->CalculateRotation(-fAngleX, -fAngleY);
 
 	SetCursorPos(CenterX, CenterY);//Position the mouse in the center
 }
@@ -407,20 +414,27 @@ void Application::ProcessKeyboard(void)
 	if (fMultiplier)
 		fSpeed *= 5.0f;
 
+	//if w is pressed then move camer forward
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
 		m_pCamera->MoveForward(fSpeed);
+
+	//if S is pressed then move backward
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
 		m_pCamera->MoveForward(-fSpeed);
 
+	//if D is pressed then move right
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 		m_pCamera->MoveSideways(fSpeed);
 
+	//if A is pressed then move left
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
 		m_pCamera->MoveSideways(-fSpeed);
 
+	//if q is pressed then move up
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
 		m_pCamera->MoveVertical(fSpeed);
 
+	//if e is pressed then move down
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::E))
 		m_pCamera->MoveVertical(-fSpeed);
 

@@ -1,5 +1,6 @@
 #include "AppClass.h"
 using namespace Simplex;
+
 void Application::InitVariables(void)
 {
 	//Set the position and target of the camera
@@ -30,6 +31,7 @@ void Application::InitVariables(void)
 		}
 	}
 	m_uOctantLevels = 1;
+	m_pRoot = new MyOctant(m_uOctantLevels, 5);
 	m_pEntityMngr->Update();
 }
 void Application::Update(void)
@@ -54,8 +56,18 @@ void Application::Display(void)
 	// Clear the screen
 	ClearScreen();
 
-	//display octree
-	//m_pRoot->Display();
+
+	//if you want to see the spacial optimization
+
+	if (m_bOctreeVisible)
+	{
+		//display octree
+		if (m_uOctantID == -1)
+			m_pRoot->Display();
+
+		else
+			m_pRoot->Display(m_uOctantID);
+	}
 	
 	// draw a skybox
 	m_pMeshMngr->AddSkyboxToRenderList();
@@ -76,4 +88,5 @@ void Application::Release(void)
 {
 	//release GUI
 	ShutdownGUI();
+	SafeDelete(m_pRoot);
 }

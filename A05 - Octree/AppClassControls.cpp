@@ -111,41 +111,61 @@ void Application::ProcessKeyReleased(sf::Event a_event)
 		bFPSControl = !bFPSControl;
 		m_pCameraMngr->SetFPS(bFPSControl);
 		break;
+
+		//if page up is pressed then show the next octant
 	case sf::Keyboard::PageUp:
 		++m_uOctantID;
-		/*
+		
 		if (m_uOctantID >= m_pRoot->GetOctantCount())
 			m_uOctantID = - 1;
-		*/
+		
 		break;
+
+	//if page down is pressed then show the previous octant
 	case sf::Keyboard::PageDown:
 		--m_uOctantID;
-		/*
+		
 		if (m_uOctantID >= m_pRoot->GetOctantCount())
 			m_uOctantID = - 1;
-		*/
+		
 		break;
+
+		//if add is pressed
 	case sf::Keyboard::Add:
-		if (m_uOctantLevels < 4)
+		if (m_uOctantLevels < 5)
 		{
+			//clear all dimensions from all entities
 			m_pEntityMngr->ClearDimensionSetAll();
 			++m_uOctantLevels;
-			/*
+			
+			//delete the current oct tree
 			SafeDelete(m_pRoot);
+
+			//create a new oct tree with this many level
 			m_pRoot = new MyOctant(m_uOctantLevels, 5);
-			*/
+			m_uOctantID = -1;
 		}
 		break;
 	case sf::Keyboard::Subtract:
 		if (m_uOctantLevels > 0)
 		{
+			//clear all dimensions from all entities
 			m_pEntityMngr->ClearDimensionSetAll();
 			--m_uOctantLevels;
-			/*
+			
+			//delete the current oct tree
 			SafeDelete(m_pRoot);
+
+			//create a new oct tree with this many level
 			m_pRoot = new MyOctant(m_uOctantLevels, 5);
-			*/
+			m_uOctantID = -1;
 		}
+		break;
+
+		//change the flag which determines whether the oct tree is visible or not
+		//the is done using the C key	
+	case sf::Keyboard::C:
+		m_bOctreeVisible = !m_bOctreeVisible;
 		break;
 	case sf::Keyboard::LShift:
 	case sf::Keyboard::RShift:
