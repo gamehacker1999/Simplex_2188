@@ -434,6 +434,8 @@ void Application::ProcessKeyboard(void)
 		//calculating the orientation of the object based on the keypress
 		//the orientation is in the form of a quaternion
 		quaternion q1 = glm::angleAxis(glm::radians(value), vector3(1.0f, 0.0f, 0.0f));
+		//multiplying the new orientation the one that is already there to get a new orientation of the object
+		//this orientation is calculated using quaterion and thus there is no gimbal lock
 		m_qOrientation *= q1;
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Y))
