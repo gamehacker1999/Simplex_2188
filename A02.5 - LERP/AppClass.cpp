@@ -37,9 +37,10 @@ void Application::InitVariables(void)
 	{
 		vector3 v3Color = WaveLengthToRGB(uColor); //calculate color based on wavelength
 		m_shapeList.push_back(m_pMeshMngr->GenerateTorus(fSize, fSize - 0.1f, 3, i, v3Color)); //generate a custom torus and add it to the meshmanager
-		std::vector<vector3> stopList; //a list of stops to the list of list of stops
+		std::vector<vector3> stopList; //a list of stops to add to the list of list of stops
 
 		//calculate the position of the stops
+		//these are the vertices of the toroids calculated using their radial coordinates
 		float angle = (2.0f*PI) / i;
 		float currAngle = 0;
 
@@ -50,12 +51,14 @@ void Application::InitVariables(void)
 			float xPos = cos(currAngle)*fRadius;
 			float yPos = sin(currAngle)*fRadius;
 
+			//incrementing the current angle
 			currAngle += angle;
 
 			//add the stop to the stop list
 			stopList.emplace_back(vector3(xPos, yPos, 0.0f));
 		}
 
+		//adding the stops of this toroid to the list of stop lists
 		listOfStopLists.emplace_back(stopList);
 		fSize += 0.5f; //increment the size for the next orbit
 		fRadius += 0.5f;
@@ -83,12 +86,17 @@ void Application::Display(void)
 	matrix4 m4Offset = IDENTITY_M4; //offset of the orbits, starts as the global coordinate system
 
 	//calculating the current time
-	static float fTime = 0;
-	static uint uClock = m_pSystem->GenClock();
-	fTime += m_pSystem->GetDeltaTime(uClock);
+	static float time = 0;
+	//getting the system clock
+	static uint clock = m_pSystem->GenClock();
+	//adding the delta time to the current time
+	time += m_pSystem->GetDeltaTime(clock);
 
-	float fPercent = MapValue(fTime, 0.0f, 0.6f, 0.0f, 1.0f);
+	//mapping the value of the time to the percent by converting a range from 0 - 0.6 to 0 - 1.0
+	float percent = MapValue(time, 0.0f, 0.6f, 0.0f, 1.0f);
 
+	//vector that holds the current position of all the orbits
+	//initializing it to 0 for the number of orbits
 	static std::vector<int> currPos(m_uOrbits,0);
 
 	/*
@@ -108,23 +116,24 @@ void Application::Display(void)
 		vector3 endPos = listOfStopLists[i][(currPos[i]+1) % listOfStopLists[i].size()];
 
 		//calculate the current position
-		vector3 v3CurrentPos = ZERO_V3;
+		vector3 currentPos = ZERO_V3;
 
 		//calculating the current position at this step by linear interpolation
-		v3CurrentPos = glm::lerp(startPos, endPos, fPercent);
+		currentPos = glm::lerp(startPos, endPos, percent);
 
 		//if time is greater than 1 second
-		if (fPercent >= 1.0)
+		if (percent >= 1.0)
 		{
 			//increase the position
 			currPos[i]++;
 			//reset the clock
-			fTime = m_pSystem->GetDeltaTime(uClock);
+			time = m_pSystem->GetDeltaTime(clock);
+			//make sure curr pos does not exceed the side of the stop list
 			currPos[i] %= listOfStopLists[i].size();
 		}
 
 		//translating the sphere's model matrix
-		matrix4 m4Model = glm::translate(m4Offset, v3CurrentPos);
+		matrix4 m4Model = glm::translate(m4Offset, currentPos);
 
 		//draw spheres
 		m_pMeshMngr->AddSphereToRenderList(m4Model * glm::scale(vector3(0.1)), C_WHITE);
