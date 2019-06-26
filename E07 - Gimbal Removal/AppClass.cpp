@@ -33,7 +33,7 @@ void Application::Display(void)
 	//removing gimbal lock
 
 	//converting the orientation of the model from quaternion to matrix 4
-	//this orientation is in quaternion instead of euler angles and thus removes gimbal lock
+	//this orientation is in quaternion instead of euler angles and thus removes gimbal lock.
 	m_m4Model = glm::toMat4(m_qOrientation);
 
 	//m_qOrientation = m_qOrientation * glm::angleAxis(glm::radians(1.0f), vector3(1.0f));
