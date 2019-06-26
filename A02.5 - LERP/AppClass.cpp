@@ -132,7 +132,7 @@ void Application::Display(void)
 			currPos[i] %= listOfStopLists[i].size();
 		}
 
-		//translating the sphere's model matrix
+		//translating the sphere's model matrix.
 		matrix4 m4Model = glm::translate(m4Offset, currentPos);
 
 		//draw spheres
