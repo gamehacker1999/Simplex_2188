@@ -55,7 +55,7 @@ void Application::Display(void)
 		m_pCamera->ResetCamera();
 		break;
 	case 2:
-		//using orthograohic view
+		//using orthographic view
 		m_pCamera->ResetCamera();
 		m_pCamera->SetPerspective(false);
 
@@ -76,7 +76,7 @@ void Application::Display(void)
 		m_pCamera->ResetCamera();
 		//setting the near plane close enough to disappear the cone
 		m_pCamera->SetPositionTargetAndUpward(vector3(0.0f, .0f, -15.0f), vector3(0, 0, 0), vector3(0.0, 1.0, 0.0));
-		m_pCamera->SetNearFar(vector2(5.0f, 1000.0f));
+		m_pCamera->SetNearFar(vector2(6.0f, 1000.0f));
 		break;
 	case 6:
 		m_pCamera->ResetCamera();
