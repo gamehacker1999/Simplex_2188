@@ -232,7 +232,7 @@ void Simplex::MyCamera::CalculateRotation(float pitch, float yaw)
 		//up vector is cross product of right vector and forard vector
 		m_v3Up = glm::normalize(glm::cross(m_v3Right, m_v3Forward));
 
-		//calculating the new target and position
+		//calculating the new target and position, and up
 		m_v3Target = (m_v3Position + m_v3Forward);
 		m_v3Above = m_v3Position + m_v3Up;
 	}
