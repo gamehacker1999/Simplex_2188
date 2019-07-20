@@ -315,34 +315,34 @@ uint MyRigidBody::SAT(MyRigidBody* const a_pOther)
 	}
 
 	//corners of the second rigid body
-	vector3 v3MinGOther = a_pOther->GetMinLocal();
-	vector3 v3MaxGOther = a_pOther->GetMaxLocal();
+	vector3 v3MinLOther = a_pOther->GetMinLocal();
+	vector3 v3MaxLOther = a_pOther->GetMaxLocal();
 
 	//corners of the first rigid body
 	std::vector<vector3> OtherOBBPoints;
 
-	vector3 backBottomLeft2 = v3MinGOther;
+	vector3 backBottomLeft2 = v3MinLOther;
 	OtherOBBPoints.emplace_back(backBottomLeft2);
 	//front up right
-	vector3 frontUpRight2 = v3MaxGOther;
+	vector3 frontUpRight2 = v3MaxLOther;
 	OtherOBBPoints.emplace_back(frontUpRight2);
 	//back bottom right point
-	vector3 backBottomRight2 = vector3(v3MaxGOther.x, v3MinGOther.y, v3MinGOther.z);
+	vector3 backBottomRight2 = vector3(v3MaxLOther.x, v3MinLOther.y, v3MinLOther.z);
 	OtherOBBPoints.emplace_back(backBottomRight2);
 	//back up right point
-	vector3 backUpRight2 = vector3(v3MaxGOther.x, v3MaxGOther.y, v3MinGOther.z);
+	vector3 backUpRight2 = vector3(v3MaxLOther.x, v3MaxLOther.y, v3MinLOther.z);
 	OtherOBBPoints.emplace_back(backUpRight2);
 	//back up left point
-	vector3 backUpLeft2 = vector3(v3MinGOther.x, v3MaxGOther.y, v3MinGOther.z);
+	vector3 backUpLeft2 = vector3(v3MinLOther.x, v3MaxLOther.y, v3MinLOther.z);
 	OtherOBBPoints.emplace_back(backUpLeft2);
 	//front bottom left
-	vector3 frontBottomLeft2 = vector3(v3MinGOther.x, v3MinGOther.y, v3MaxGOther.z);
+	vector3 frontBottomLeft2 = vector3(v3MinLOther.x, v3MinLOther.y, v3MaxLOther.z);
 	OtherOBBPoints.emplace_back(frontBottomLeft2);
 	//front bottom right point
-	vector3 frontBottomRight2 = vector3(v3MaxGOther.x, v3MinGOther.y, v3MaxGOther.z);
+	vector3 frontBottomRight2 = vector3(v3MaxLOther.x, v3MinLOther.y, v3MaxLOther.z);
 	OtherOBBPoints.emplace_back(frontBottomRight2);
 	//front up left point
-	vector3 frontUpLeft2 = vector3(v3MinGOther.x, v3MaxGOther.y, v3MaxGOther.z);
+	vector3 frontUpLeft2 = vector3(v3MinLOther.x, v3MaxLOther.y, v3MaxLOther.z);
 	OtherOBBPoints.emplace_back(frontUpLeft2);
 
 	//calculating the global space of every single corner point
@@ -376,6 +376,10 @@ uint MyRigidBody::SAT(MyRigidBody* const a_pOther)
 
 
 	//9 cross product axes
+	//the logic of these axes is as follows
+	//for each normal axis in this rigid body, find a cross product of that axis
+	//with each axis on the other rigid body
+
 	vector3 A0CrossB0 = glm::cross(A0, B0);
 	normalList.emplace_back(A0CrossB0);
 
