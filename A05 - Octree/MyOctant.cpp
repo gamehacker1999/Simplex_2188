@@ -365,6 +365,7 @@ bool Simplex::MyOctant::IsColliding(uint index)
 		return false;
 	}
 
+	//return true if all test fail
 	return true;
 	
 }
