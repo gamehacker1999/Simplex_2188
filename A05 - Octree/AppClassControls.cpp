@@ -147,7 +147,7 @@ void Application::ProcessKeyReleased(sf::Event a_event)
 		}
 		break;
 	case sf::Keyboard::Subtract:
-		if (m_uOctantLevels > 0)
+		if (m_uOctantLevels > 1)
 		{
 			//clear all dimensions from all entities
 			m_pEntityMngr->ClearDimensionSetAll();
