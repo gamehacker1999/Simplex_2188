@@ -249,8 +249,6 @@ void Application::Display(void)
 			fPercent = 1.f;
 			//go to the next position
 			currPos--;
-			//currPos %= m_vPath.size(); //prevent current position from going overboard
-			//uClock = m_pSystem->GenClock();
 			fTimer = m_pSystem->GetDeltaTime(uClock); //reset clock
 			m_vPath.pop_back();
 		}
