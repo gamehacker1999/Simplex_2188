@@ -1,17 +1,15 @@
-/*----------------------------------------------
-Programmer: Alberto Bobadilla (labigm@gmail.com)
-Date: 2017/06
-----------------------------------------------*/
+
 #ifndef __APPLICATIONCLASS_H_
 #define __APPLICATIONCLASS_H_
 
 #include "Definitions.h"
+#include"Utils.h"
 
 #include "ControllerConfiguration.h"
 #include "imgui\ImGuiObject.h"
 
 #include "MyEntityManager.h"
-
+#include"Graph.h"
 #include"MyOctant.h"
 
 namespace Simplex
@@ -19,23 +17,19 @@ namespace Simplex
 	//Adding Application to the Simplex namespace
 class Application
 {
-	MyOctant* m_pRoot = nullptr;
 	MyEntityManager* m_pEntityMngr = nullptr; //Entity Manager
-	uint m_uOctantID = -1; //Index of Octant to display
-	uint m_uObjects = 0; //Number of objects in the scene
-	uint m_uOctantLevels = 0; //Number of levels in the octree
-	bool m_bOctreeVisible = true; //flag to see if spacial optimization can be represented visually
-private:
-	String m_sProgrammer = "Shubham Sachdeva - ss1594@g.rit.edu"; //programmer
 
+private:
 	static ImGuiObject gui; //GUI object
 	bool m_bGUI_Main = true; //show Main GUI window?
-	bool m_bGUI_Console = true; //show Credits GUI window?
+	bool m_bGUI_Console = false; //show Credits GUI window?
 	bool m_bGUI_Test = false; //show Test GUI window?
 	bool m_bGUI_Controller = false; //show Controller GUI window?
 
 	uint m_uRenderCallCount = 0; //count of render calls per frame
 	uint m_uControllerCount = 0; //count of controllers connected
+
+	String m_sProgrammer = "Shubham Sachdeva - ss1594@g.rit.edu";
 
 	bool m_bFocused = true; //is the window focused?
 
@@ -43,11 +37,11 @@ private:
 
 	vector3 m_v3Mouse = vector3(); //position of the mouse in the window
 	bool m_bFPC = false;// First Person Camera flag
-	bool m_bArcBall = false;// ArcBall flag
+	bool m_bArcBall = false;// Arcball flag
 	quaternion m_qArcBall; //ArcBall quaternion
 
 	vector4 m_v4ClearColor; //Color of the scene
-	bool m_bRunning = false; //Is App running?
+	bool m_bRunning = false; //Is app running?
 	bool m_bModifier = false; //is shift pressed?
 
 	sf::Window* m_pWindow = nullptr; //SFML window
@@ -55,7 +49,6 @@ private:
 	LightManager* m_pLightMngr = nullptr; //Light Manager of the system
 	MeshManager* m_pMeshMngr = nullptr; //Mesh Manager
 	CameraManager* m_pCameraMngr = nullptr; //Singleton for the camera manager
-	
 	ControllerInput* m_pController[8]; //Controller
 	uint m_uActCont = 0; //Active Controller of the Application
 
@@ -63,8 +56,52 @@ private:
 	sf::Sound m_sound; //sound effect
 	sf::Music m_soundBGM; //background music
 
-	//a star specific fields
-	bool b_isColliding=false;
+	bool m_bIsColliding = false; //boolean to see if the there is collision between the path follower
+	bool m_bHasMoved = false; // booloean to see if the target has moved
+	int m_i2DMaze[20][20] = 
+	{ 
+		{1,1,1,1,1,1,1,1,1,1,10,1,1,1,1,1,1,1,1,1},
+		{1,1,1,10,1,1,1,1,1,1,1,1,1,1,1,1,1,10,1,1},
+		{1,1,1,1,1,1,1,1,1,1,10,1,1,1,1,1,1,1,1,1},
+		{1,1,10,1,1,1,10,1,1,1,1,1,1,1,1,1,1,1,1,1},
+		{1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,1,1},
+		{1,1,1,10,1,0,0,0,1,1,1,1,1,0,0,0,0,0,1,1},
+		{1,1,1,1,1,0,0,0,1,1,1,1,1,0,0,0,0,0,0,1},
+		{1,1,1,10,1,0,0,0,0,0,0,1,1,1,0,0,0,0,1,1},
+		{1,1,1,1,1,1,1,0,0,0,0,1,1,1,1,10,1,1,1,1},
+		{1,10,1,1,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1,1},
+		{1,1,1,1,1,1,1,1,1,1,1,1,10,1,1,1,1,10,1,1},
+		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+		{1,1,10,1,1,1,1,1,1,0,1,1,1,1,10,1,1,1,1,1},
+		{1,1,1,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1,1,1},
+		{1,1,1,1,1,1,0,0,0,0,1,1,10,1,1,1,1,1,1,1},
+		{1,10,1,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1,10,1},
+		{1,1,1,1,1,1,1,1,1,1,1,10,1,1,1,1,1,1,1,1},
+		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,10,1,1,1},
+		{1,1,1,10,1,1,1,1,1,1,1,10,1,1,1,1,1,1,1,1},
+		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,10,1,1}
+	}; // maze that has the paths
+	vector3 m_v3startPos; //start postion of the path
+	vector3 m_v3endPos; //end position of the path
+	std::vector<Mesh*> m_pMeshes; //vector to hold all meshes
+	std::vector<matrix4> m_pModelMatrices; //vector to hold the position of the path meshes
+
+	Graph m_gGraph; // that holds all the data of the maze
+	std::vector<Vertex> m_vPath; //stack that holds the path
+	bool m_bPathFound = false;
+
+	Mesh* m_pMesh = nullptr; //this is what i will use to draw cuboids to highlight the path
+	vector3 m_v3TargetPos; //this is the postion of the target
+	vector3 m_v3curPos; //current position of the path follower
+
+	float fTimer = 0;	//store the new timer
+	uint uClock; //generate a new clock for that timer
+
+	//variables for the octree
+	uint m_uOctantCount=1;
+	bool m_bIsOctreeVisible=false;
+	MyOctant* m_pRoot = nullptr;
+
 
 public:
 #pragma region Constructor / Run / Destructor
@@ -333,6 +370,10 @@ private:
 	OUTPUT: ---
 	*/
 	Application& operator=(Application const& input);
+#pragma endregion
+
+#pragma region A star specific methods
+	bool CalculatePath();
 #pragma endregion
 };
 

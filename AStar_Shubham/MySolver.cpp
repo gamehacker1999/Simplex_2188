@@ -90,7 +90,7 @@ vector3 RoundSmallVelocity(vector3 a_v3Velocity, float minVelocity = 0.01f)
 }
 void MySolver::Update(void)
 {
-	ApplyForce(vector3(0.0f, -0.035f, 0.0f));
+	//ApplyForce(vector3(0.0f, -0.035f, 0.0f));
 
 	m_v3Velocity += m_v3Acceleration;
 
@@ -104,9 +104,12 @@ void MySolver::Update(void)
 
 	if (m_v3Position.y <= 0)
 	{
-		m_v3Position.y = 0;
+		m_v3Position.y = 1;
 		m_v3Velocity.y = 0;
 	}
+
+	m_v3Position.x = glm::clamp(m_v3Position.x, -9.5f, 9.5f);
+	m_v3Position.z = glm::clamp(m_v3Position.z, -9.5f, 9.5f);
 
 	m_v3Acceleration = ZERO_V3;
 }
