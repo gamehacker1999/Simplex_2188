@@ -67,6 +67,7 @@ void Graph::SetMaze(int** maze)
 		heuristics[i] = new float[height];
 	}
 
+	//looping through the graph to find the heuristic to each point
 	for (int i = 0; i < width; i++)
 	{
 		for (int j = 0; j < height; j++)
@@ -116,12 +117,15 @@ void Graph::FindShortestPath(std::vector<Vertex>& path)
 	//while open list is empty
 	while (!openQueue.empty())
 	{
+		//setting the current vertex as the top of the queue
 		currentVertex = openQueue.top();
+
+		//popping the current vertex from the open queue
 		openQueue.pop();
+
+		//adding it to the closed list
 		inClosed[currentVertex.xPos][currentVertex.yPos] = true;
 		neighbors.clear();
-		//closed.emplace(currentVertex, true);
-		//std::vector<Vertex> neighbors;
 
 		//calling function to store neighbours
 		FindNeighbors(neighbors);
@@ -133,7 +137,6 @@ void Graph::FindShortestPath(std::vector<Vertex>& path)
 
 			//check if neighbour in in closed
 			if (inClosed[neighbors[i].xPos][neighbors[i].yPos] == true)
-				//if( closed[neighbors[i]] == true)
 			{
 				continue;
 			}

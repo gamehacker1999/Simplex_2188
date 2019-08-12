@@ -35,14 +35,6 @@ void Application::InitVariables(void)
 				matrix4 m4Position = glm::translate(v3position);
 				m_pEntityMngr->SetModelMatrix(m4Position);
 			}
-
-			if (m_i2DMaze[i][j] == 10)
-			{
-				m_pEntityMngr->AddEntity("Sorted\\WarpPipe.fbx", "Pipe_" + std::to_string(j * 20 + i));
-				vector3 v3position = vector3(ixLoc, 1, izLoc);
-				matrix4 m4Position = glm::translate(v3position);
-				m_pEntityMngr->SetModelMatrix(m4Position);
-			}
 		}
 	}
 
@@ -68,16 +60,13 @@ void Application::InitVariables(void)
 		//if the node is a traversable node then add a zombie there and then increase the cost of that node
 		if (m_i2DMaze[int(xPos)][int(yPos)] != 0)
 		{
-			//m_i2DMaze[int(xPos)][int(yPos)] = 10;
 			xPos -= 9.5;
 			yPos -= 9.5;
-			vector3 v3PigPos = vector3(RoundToNearestHalf(xPos), 1, RoundToNearestHalf(yPos));
+			vector3 v3ZombiePos = vector3(RoundToNearestHalf(xPos), 1, RoundToNearestHalf(yPos));
 			m_pEntityMngr->AddEntity("Minecraft\\Zombie.obj", "Zombie" + std::to_string(i));
-			m_pEntityMngr->SetModelMatrix(glm::translate(v3PigPos));
+			m_pEntityMngr->SetModelMatrix(glm::translate(v3ZombiePos));
 			m_pEntityMngr->UsePhysicsSolver();
 		}
-
-		//m_pEntityMngr->SetMass(1.5);
 	}
 
 	//adding the path follower at the starting position

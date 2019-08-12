@@ -441,6 +441,9 @@ void Application::ProcessKeyboard(void)
 
 #pragma region process target movement
 
+	//moving the target around by processing the arrow keys given by the user
+	//for each of this movement, if the creeper is going in a hole then cancel that movement
+	//as we want the creeper to always be reachable
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 	{
 		m_v3TargetPos.x -= 1.f;
@@ -465,7 +468,7 @@ void Application::ProcessKeyboard(void)
 		}
 	}
 	
-
+	//clamp the x position so the creeper stays within the bounds
 	m_v3TargetPos.x = glm::clamp(m_v3TargetPos.x, -9.49f, 9.49f);
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) )
@@ -493,9 +496,8 @@ void Application::ProcessKeyboard(void)
 		}
 	}
 	
-
+	//clamp the x position so the creeper stays within the bounds
 	m_v3TargetPos.z = glm::clamp(m_v3TargetPos.z, -9.49f, 9.49f);
-
 
 #pragma endregion
 }

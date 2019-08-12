@@ -14,7 +14,7 @@ Vertex::Vertex()
 	closed = false;
 }
 
-//parametrized constructor that takes the width and height
+//parametrized constructor that takes the x and y position
 Vertex::Vertex(int xPos, int yPos)
 {
 	this->xPos = xPos;
@@ -78,7 +78,6 @@ bool Vertex::operator==(const Vertex& vertex) const
 //greater than operator overload 
 bool Vertex::operator<(const Vertex & vertex) const
 {
-	//return this->priority < vertex.priority;
 	return this->xPos < vertex.xPos < xPos&&this->yPos < vertex.yPos;
 }
 
