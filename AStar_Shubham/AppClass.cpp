@@ -262,8 +262,6 @@ void Application::Display(void)
 			{
 				//apply this velocity as force to zombie
 				curEntity->ApplyForce(v3SteveVelocity);
-				m_pEntityMngr->Update();
-				v3EntityPos = curEntity->GetPosition();
 			}
 		}
 	}
